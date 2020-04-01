@@ -1,0 +1,682 @@
+@import url('https://fonts.googleapis.com/css?family=Baloo+Chettan+2|Rubik&display=swap');
+/* 
+font-family: 'Baloo Chettan 2', cursive;
+font-family: 'Rubik', sans-serif; 
+*/
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* border: 2px solid; */
+}
+
+:root {
+  --body-background: rgba(255, 255, 204, 0.5);
+
+  /* store colors */
+  --store-teal: rgb(102, 204, 204);
+  --store-hotpink: rgb(204, 51, 102);
+  --store-burgundy: rgb(102, 51, 51);
+  --store-skyblue: rgb(153, 204, 255);
+  --store-orange: rgb(255, 153, 51);
+  --store-walltop: rgb(204, 255, 255);
+  --store-wallborder: rgb(204, 204, 153);
+  --store-wallbottom: rgb(236, 236, 226);
+
+  /* character colors */
+  --lady-orange: rgb(255, 102, 102);
+  --lady-burgundy: rgb(102, 51, 51);
+  --lady-pink: rgb(255, 102, 153);
+  --lady-yellow: rgb(255, 153, 51);
+  --man-teal: rgb(153, 204, 204);
+  --man-green: rgb(0, 153, 102);
+  --man-blue: rgb(51, 51, 153);
+  --man-peach: rgb(255, 153, 102);
+  --man-red: rgb(204, 51, 51);
+  --man-black: rgb(51, 51, 51);
+}
+
+.clearfix::after  {
+  content: '';
+  clear: both;
+  display: table;
+}
+
+body {
+  background-color: var(--body-background);
+}
+
+/*************************/
+/*  GAME  LANDING  PAGE  */
+/*************************/
+
+.container {
+  width: 95%;
+  min-width: 650px;
+  max-width: 850px;
+  height: 100vh;
+  margin: 0 auto;
+  /* border: 2px solid pink; */
+}
+
+.hidden {
+  /* display: none; */
+  visibility: hidden;
+}
+
+header,
+main {
+  display: grid;
+  background-color: var(--store-wallbottom);
+  /* border: 2px solid black; */
+}
+
+/******************** TOP OF GAME BOARD *************************/
+header {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 1fr;
+}
+
+img {
+  width: 100%;
+}
+/*****************************************************************/
+
+main {
+  font-family: 'Baloo Chettan 2', cursive;
+  font-size: 1.2em;
+
+  display: flex;
+}
+
+.wrapper {
+  /* border: 2px solid blue; */
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.chalkboard {
+  flex: 1;
+
+  margin: 15px;
+  /* max-height: 543px; */
+  height: 78%;
+  background-color: var(--store-orange);
+  display: flex;
+  /* border: 2px solid greenyellow; */
+}
+
+.chalkboard-inside {
+  flex: 1;
+  border: dashed 1px var(--store-burgundy);
+  background-color: var(--man-black);
+  margin: 25px;
+  padding: 10px;
+
+  display: flex;
+}
+
+.chalkboard-line {
+  flex: 1;
+  border: solid 1px var(--store-wallbottom);
+  padding: 10px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.instructions {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  /* border: 2px solid red; */
+  overflow: auto;
+}
+
+h1 {
+  /* flex: 0.5; */
+  color: var(--store-walltop);
+}
+
+.instruction {
+  display: inline-block;
+  padding: 0 5px;
+  font-size: 1.2em;
+  color: var(--store-wallbottom);
+}
+
+.gameModeButtonContainer {
+  flex: 0.5;
+  margin-top: 10px;
+  max-height: 200px;
+
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.gameModeButton {
+  flex: 1;
+  margin: 15px;
+  padding: 20px;
+  font-size: 1em;
+  font-family: 'Rubik', sans-serif;
+  cursor: pointer;
+  border: 2px solid var(--store-teal);
+}
+
+.btnCustomerMode {
+  background-color: var(--store-hotpink);
+  color: var(--store-wallbottom);
+}
+
+.btnCustomerMode:hover {
+  background-color: var(--store-wallbottom);
+  color: var(--store-hotpink);
+}
+
+.btnRevenueMode {
+  background-color: var(--man-green);
+  color: var(--store-wallbottom);
+}
+
+.btnRevenueMode:hover {
+  background-color: var(--store-wallbottom);
+  color: var(--man-green);
+}
+
+footer {
+  height: 40px;
+  background-color: var(--store-wallborder);
+}
+
+/*****************************************/
+/*  GAME  LANDING  PAGE  MEDIA  QUERIES  */
+/*****************************************/
+@media screen and (max-width: 500px) {
+  body {
+    font-size: 0.85em;
+  }
+
+  .chalkboard-inside {
+    margin: 10px;
+  }
+
+  h1 {
+    font-size: 1.2em;
+    /* text-align: center; */
+    line-height: 1.2em;
+    text-decoration: underline;
+  }
+
+  .instruction {
+    margin: 0;
+    padding: 0;
+  }
+
+  .gameModeButtonContainer {
+    margin-bottom: 15px;
+  }
+}
+
+/***********************  GAME  CSS  *****************************/
+
+/* -----> TODO: MAKE ROUND MODAL - POPS UP BEFORE EACH ROUND */
+
+/*///////////////  GAME WALL  ///////////////*/
+
+/* wall */
+
+.wall,
+.gameLogo {
+  grid-column: 1/5;
+  grid-row: 1/2;
+}
+
+.wall {
+  background-color: rgba(51, 51, 51, 0);
+  z-index: 10;
+
+  display: grid;
+  grid-template-rows: 12% 48% 40%;
+}
+
+/* wall awning */
+.wall-awning {
+  grid-row: 1/2;
+}
+
+/* wall top */
+
+.wall-top {
+  display: grid;
+  grid-template-rows: 20% auto;
+}
+
+/* .wall-top-stats,
+.wall-top-customer {
+  border: 2px solid blue;
+} */
+
+.wall-top-stats {
+  margin-top: 1%;
+  display: grid;
+  grid-template-columns: 5% 25% 7.5% 25% 7.5% 25% 5%;
+  font-family: 'Rubik', sans-serif;
+  color: var(--man-black);
+
+  text-align: center;
+}
+
+.stats-2,
+.stats-1,
+.stats-3 {
+  border: 2px solid orange;
+  padding: 2% 2% 1% 2%;
+  /* background-color: orange; */
+}
+
+.wall-top-customer {
+  margin-top: 20px;
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: auto 14% 18% 14% 18% 14% auto;
+}
+
+.customer-keyframe-2,
+.customer-keyframe-1,
+.customer-keyframe-3,
+.customer-2,
+.customer-1,
+.customer-3 {
+  display: grid;
+  grid-template-rows: 1fr;
+  /* display: flex; */
+}
+
+.customer-img-2,
+.customer-img-1,
+.customer-img-3 {
+  height: 100%;
+  /* flex: 1; */
+}
+
+/* CUSTOMER ANIMATION */
+.customer-keyframe-2 {
+  animation: approach-counter-right 10s 1;
+  /* animation: leave-counter-left 10s 1;
+  opacity: 0; */
+}
+
+.customer-keyframe-1 {
+  animation: approach-counter-left 5s 1;
+  /* animation: leave-counter-right 5s 1;
+  opacity: 0; */
+}
+
+.customer-keyframe-3 {
+  animation: approach-counter-left 15s 1;
+  /* animation: leave-counter-right 15s 1;
+  opacity: 0; */
+}
+
+@keyframes approach-counter-right {
+  0% {
+    transform: translateX(-1000px);
+    opacity: 0;
+  }
+  75% {
+    transform: translateX(-100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0px);
+    opacity: 1;
+  }
+}
+
+@keyframes approach-counter-left {
+  0% {
+    transform: translateX(1000px);
+    opacity: 0;
+  }
+  75% {
+    transform: translateX(100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0px);
+    opacity: 1;
+  }
+}
+
+@keyframes leave-counter-right {
+  0% {
+    transform: translateX(0px);
+    opacity: 1;
+  }
+  75% {
+    transform: translateX(-100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-1000px);
+    opacity: 0;
+  }
+}
+
+@keyframes leave-counter-left {
+  0% {
+    transform: translateX(0px);
+    opacity: 1;
+  }
+  75% {
+    transform: translateX(100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(1000px);
+    opacity: 0;
+  }
+}
+
+/* wall bottom */
+
+.wall-bottom {
+  display: grid;
+  grid-template-rows: 15% 4fr 1fr;
+}
+
+.wall-bottom-order {
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: auto 14% 18% 14% 18% 14% auto;
+}
+
+/* -----> TODO: MAKE RESPONSIVE & ADJUST SIZE ???*/
+
+.order-3,
+.order-2,
+.order-1 {
+  border-radius: 20px;
+  border: 10px solid var(--body-background);
+  background-color: var(--lady-yellow);
+  padding: 1em;
+}
+
+.order-keyframe-2 {
+  animation: place-order 15s 1;
+  /* animation-delay: 20s; */
+}
+
+.order-keyframe-1 {
+  animation: place-order 10s 1;
+  /* animation-delay: 10s; */
+}
+
+.order-keyframe-3 {
+  animation: place-order 20s 1;
+  /* animation-delay: 30s; */
+}
+
+@keyframes place-order {
+  0% {
+    opacity: 0;
+  }
+  75% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes place-order {
+  0% {
+    opacity: 0;
+  }
+  75% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* -----> TODO: MAKE FOOD COUNTER SMALLER. PERHAPS ADD ALL NINE ITEMS. */
+
+/*/////////////  FOOD CONTAINER  //////////////*/
+
+/*//////////////////////////////////////*/
+
+.food-counter {
+  flex: 1;
+
+  margin: 5px 10px;
+  background-color: var(--store-burgundy);
+  display: flex;
+}
+
+.food-counter-inside {
+  flex: 1;
+  border: dashed 1px var(--store-burgundy);
+  background-color: var(--body-background);
+  margin: 13px;
+  padding: 7px;
+
+  display: flex;
+}
+
+.food-counter-line {
+  flex: 1;
+  border: solid 1px var(--store-wallbottom);
+  padding: 5px 10px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.food-container {
+  flex: 1;
+  /* border: 2px solid red; */
+  padding: 5px 0;
+
+  /* display: grid;
+  grid-template-columns: 3px repeat(auto-fill, 1fr 10px) 1fr 3px;
+  grid-template-rows: repeat(2, 10px 1fr) 5px;
+  grid-gap: 0.25rem; */
+
+  display: grid;
+  grid-template-columns: 1.5% repeat(3, 1fr 2%) 1fr 1.5%;
+  grid-template-rows: 2.5% 45% auto 45% 2.5%;
+  grid-gap: 0.25rem;
+}
+
+.food-item {
+  border: 15px solid white;
+  border-radius: 20px;
+  background-color: var(--store-skyblue);
+  padding: 1em;
+  cursor: pointer;
+}
+
+.food-image {
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+.food-item:hover {
+  border-color: var(--store-burgundy);
+}
+
+.food-item:nth-child(1),
+.food-item:nth-child(2),
+.food-item:nth-child(3),
+.food-item:nth-child(4) {
+  grid-row: 1/3;
+}
+
+.food-item:nth-child(5),
+.food-item:nth-child(6),
+.food-item:nth-child(7),
+.food-item:nth-child(8) {
+  background: var(--store-hotpink);
+  /* background: var(--man-peach); */
+  grid-row: 4/6;
+}
+
+.food-item:nth-child(1),
+.food-item:nth-child(5) {
+  grid-column: 2/3;
+}
+
+.food-item:nth-child(2),
+.food-item:nth-child(6) {
+  grid-column: 4/5;
+}
+
+.food-item:nth-child(3),
+.food-item:nth-child(7) {
+  grid-column: 6/7;
+}
+
+.food-item:nth-child(4),
+.food-item:nth-child(8) {
+  grid-column: 8/9;
+}
+
+/* INDIVIDUAL POT */
+
+.pot-label {
+  opacity: 1;
+  margin: 0;
+  text-align: center;
+}
+
+.raw {
+  opacity: 0.5;
+}
+
+.cook {
+  animation: 8s cook linear 1;
+  position: relative;
+}
+
+@keyframes cook {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.cooked {
+  /* make item draggable via JS */
+}
+
+/*********************** w3schools.com css ***********************/
+.w3-light-grey,
+.w3-hover-light-grey:hover,
+.w3-light-gray,
+.w3-hover-light-gray:hover {
+  color: #000 !important;
+
+  background-color: #f1f1f1 !important;
+}
+
+.w3-round-small {
+  border-radius: 2px;
+}
+.w3-round,
+.w3-round-medium {
+  border-radius: 4px;
+}
+.w3-round-large {
+  border-radius: 8px;
+}
+.w3-round-xlarge {
+  border-radius: 16px;
+}
+.w3-round-xxlarge {
+  border-radius: 32px;
+}
+
+.w3-container,
+.w3-panel {
+  padding: 0.1em 16px;
+}
+.w3-panel {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.w3-container:after,
+.w3-container:before,
+.w3-panel:after,
+.w3-panel:before,
+.w3-row:after,
+.w3-row:before,
+.w3-row-padding:after,
+.w3-row-padding:before,
+.w3-cell-row:before,
+.w3-cell-row:after,
+.w3-clear:after,
+.w3-clear:before,
+.w3-bar:before,
+.w3-bar:after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+.w3-blue,
+.w3-hover-blue:hover {
+  color: #fff !important;
+  background-color: var(--man-teal) !important;
+  /* background-color: #2196f3 !important; */
+}
+.w3-burgundy,
+.w3-hover-burgundy:hover {
+  color: #000 !important;
+  background-color: var(--store-burgundy) !important;
+  /* background-color: #f0e68c !important; */
+}
+
+.w3-pink,
+.w3-hover-pink:hover {
+  color: #fff !important;
+  /* background-color: var(--store-hotpink) !important; */
+  background-color: #e91e63 !important;
+}
+.w3-green,
+.w3-hover-green:hover {
+  color: #fff !important;
+  background-color: var(--man-green) !important;
+  /* background-color: #4caf50 !important; */
+}
+
+.w3-grey,
+.w3-hover-grey:hover,
+.w3-gray,
+.w3-hover-gray:hover {
+  color: #000 !important;
+  background-color: #9e9e9e !important;
+}
+
+.w3-dark-grey,
+.w3-hover-dark-grey:hover,
+.w3-dark-gray,
+.w3-hover-dark-gray:hover {
+  color: #fff !important;
+  background-color: #616161 !important;
+}

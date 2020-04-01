@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cafe Chozen</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="js/app.js"></script>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="wall">
+          <div class="wall-awning"></div>
+          <!-- WALL TOP -->
+          <div class="wall-top">
+            <!-- WALL TOP STATS -->
+            <div class="wall-top-stats">
+              <div class="column"></div>
+              <div class="stats-1">
+                <div class="w3-container">
+                  <span></span>
+                  <div class="w3-burgundy w3-round-large">
+                    <div
+                      class="w3-container w3-pink w3-round-large"
+                      style="width:10%"
+                    >
+                      CUSTOMERS
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="column"></div>
+              <!-- <div class="stats-2 hidden"> -->
+              <div class="stats-2 hidden">
+                <div class="w3-container">
+                  <span></span>
+                  <div class="w3-burgundy w3-round-large">
+                    <div
+                      class="w3-container w3-green w3-round-large"
+                      style="width:80%"
+                    >
+                      REVENUE
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="column"></div>
+              <div class="stats-3">
+                <h2 class="stats-timer">TIMER <span> 00:00</span></h2>
+              </div>
+              <div class="column"></div>
+            </div>
+            <!-- WALL TOP CUSTOMER -->
+            <div class="wall-top-customer">
+              <div class="column"></div>
+              <!-- CUSTOMER 2 -->
+              <div class="customer-2">
+                <div class="customer-keyframe-2">
+                  <img
+                    src="images/customers/lady_pink.png"
+                    alt=""
+                    class="customer-img-2"
+                    draggable="false"
+                  />
+                </div>
+              </div>
+              <div class="column"></div>
+              <!-- CUSTOMER 1 -->
+              <div class="customer-1">
+                <div class="customer-keyframe-1">
+                  <img
+                    src="images/customers/man_red.png"
+                    alt=""
+                    class="customer-img-1"
+                    draggable="false"
+                  />
+                </div>
+              </div>
+              <div class="column"></div>
+              <!-- CUSTOMER 3 -->
+              <div class="customer-3">
+                <div class="customer-keyframe-3">
+                  <img
+                    src="images/customers/man_green.png"
+                    alt=""
+                    class="customer-img-3"
+                    draggable="false"
+                  />
+                </div>
+              </div>
+              <div class="column"></div>
+            </div>
+          </div>
+          <!-- WALL BOTTOM -->
+          <div class="wall-bottom">
+            <div class="row"></div>
+            <div class="wall-bottom-order">
+              <div class="column"></div>
+              <div class="order-2">
+                <div class="order-keyframe-2">
+                  <img
+                    src="images/food/noodles.png"
+                    alt=""
+                    class="order-img-2"
+                    draggable="false"
+                  />
+                </div>
+              </div>
+              <div class="column"></div>
+              <div class="order-1">
+                <div class="order-keyframe-1">
+                  <img
+                    src="images/food/tofu.png"
+                    alt=""
+                    class="order-img-1"
+                    draggable="false"
+                  />
+                </div>
+              </div>
+              <div class="column"></div>
+              <div class="order-3">
+                <div class="order-keyframe-3">
+                  <img
+                    src="images/food/pizza.png"
+                    alt=""
+                    class="order-img-3"
+                    draggable="false"
+                  />
+                </div>
+              </div>
+              <div class="column"></div>
+            </div>
+            <div class="row"></div>
+          </div>
+        </div>
+        <!-- GAME LOGO: STORE BACKGROUND -->
+        <div class="gameLogo">
+          <img
+            class="gameLogo"
+            src="images/store/store_background.png"
+            alt="Cafe Chozen Counter"
+          />
+        </div>
+      </header>
+      <!-- MAIN: FOOD COUNTER -->
+      <main>
+        <div class="wrapper clearfix">
+          <div class="food-counter">
+            <div class="food-counter-inside">
+              <div class="food-counter-line">
+                <div class="food-container">
+                  <!-- FOOD ITEM 1 -->
+                  <div class="food-item" id="food-item-1" draggable="true">
+                    <div class="pot raw" id="pot-1">
+                      <p class="pot-label" id="pot-label-button-1">SERVE</p>
+                      <img
+                        src="images/food/noodles.png"
+                        alt="image of food item 1"
+                        class="food-image"
+                        id="food-image-1"
+                        draggable="false"
+                      />
+                    </div>
+                  </div>
+                  <!-- FOOD ITEM 2 -->
+                  <div class="food-item" id="food-item-2" draggable="false">
+                    <div class="pot raw" id="pot-2">
+                      <p class="pot-label" id="pot-label-button-2">COOK</p>
+                      <img
+                        src="images/food/tea.png"
+                        alt="image of food item 2"
+                        class="food-image"
+                        id="food-image-2"
+                        draggable="false"
+                      />
+                    </div>
+                  </div>
+                  <!-- FOOD ITEM 3 -->
+                  <div class="food-item" id="food-item-3" draggable="false">
+                    <div class="pot raw" id="pot-3">
+                      <p class="pot-label " id="pot-label-button-3">COOK</p>
+                      <img
+                        src="images/food/wine.png"
+                        alt="image of food item 3"
+                        class="food-image"
+                        id="food-image-3"
+                        draggable="false"
+                      />
+                    </div>
+                  </div>
+                  <!-- FOOD ITEM 4 -->
+                  <div class="food-item" id="food-item-4" draggable="false">
+                    <div class="pot raw" id="pot-4">
+                      <p class="pot-label" id="pot-label-button-4">COOK</p>
+                      <img
+                        src="images/food/ice_cream.png"
+                        alt="image of food item 4"
+                        class="food-image"
+                        id="food-image-4"
+                        draggable="false"
+                      />
+                    </div>
+                  </div>
+                  <!-- FOOD ITEM 5 -->
+                  <div class="food-item" id="food-item-5" draggable="false">
+                    <div class="pot raw" id="pot-5">
+                      <!-- text on button will change after item is cooked -->
+                      <p class="pot-label" id="pot-label-button-5">COOK</p>
+                      <img
+                        src="images/food/pizza.png"
+                        alt="image of food item 5"
+                        class="food-image"
+                        id="food-image-5"
+                        draggable="false"
+                      />
+                    </div>
+                  </div>
+                  <!-- FOOD ITEM 6 -->
+                  <div class="food-item" id="food-item-6" draggable="false">
+                    <div class="pot raw" id="pot-6">
+                      <p class="pot-label" id="pot-label-button-6">COOK</p>
+                      <img
+                        src="images/food/turkey.png"
+                        alt="image of food item 6"
+                        class="food-image"
+                        id="food-image-6"
+                        draggable="false"
+                      />
+                    </div>
+                  </div>
+                  <!-- ADDING 3 NEW FOOD ITEMS -->
+                  <!-- FOOD ITEM 7 -->
+                  <div class="food-item" id="food-item-7" draggable="false">
+                    <div class="pot raw" id="pot-7">
+                      <p class="pot-label" id="pot-label-button-7">COOK</p>
+                      <img
+                        src="images/food/cocktail.png"
+                        alt="image of food item 7"
+                        class="food-image"
+                        id="food-image-7"
+                        draggable="false"
+                      />
+                    </div>
+                  </div>
+
+                  <!-- FOOD ITEM 8 -->
+                  <div class="food-item" id="food-item-8" draggable="false">
+                    <div class="pot raw" id="pot-8">
+                      <p class="pot-label" id="pot-label-button-8">COOK</p>
+                      <img
+                        src="images/food/tofu.png"
+                        alt="image of food item 8"
+                        class="food-image"
+                        id="food-image-8"
+                        draggable="false"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="gameModeButtonContainer hidden">
+            <form class="gameMode">
+              <button
+                type="reset"
+                class="gameModeButton btnRestartGame"
+                id="btnRestartGame"
+              >
+                New Game?
+              </button>
+            </form>
+          </div> -->
+        </div>
+      </main>
+      <footer>
+        <!-- TODO: ADD FOOTER INFO -->
+        <p></p>
+      </footer>
+    </div>
+  </body>
+</html>
