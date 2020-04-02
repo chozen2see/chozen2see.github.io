@@ -50,8 +50,7 @@ class Customer {
     seat = 0,
     patience_level = 'HIGH',
     direction = 'LEFT',
-    delay = '5s',
-    order
+    delay = '5s'
   ) {
     (this.id = id),
       (this.name = name),
@@ -61,7 +60,7 @@ class Customer {
       (this.patience_level = patience_level),
       (this.direction = direction),
       (this.delay = delay),
-      (this.order = order);
+      this.order;
   }
 
   set_direction(direction) {
@@ -102,10 +101,11 @@ class Order {
     this.delay = delay;
   }
 
+  // reset () {
   create(seat) {
     // order has been initialized for the seat, but is not visible on UI. customer is reading menu.
     this.status = 'CREATED';
-    this.seat = seat;
+    this.seat = seat; // remove this?
     console.log(`Order #${this.id} has been created.`);
   }
 
@@ -201,12 +201,54 @@ class FoodItem {
 // ---------------> GET(), SET(), UPDATE_STATE(STATE), UPDATE_MODE(MODE), INCREMENT_CUSTOMERS_SERVED(), INCREMENT_REVENUE(), UPDATE_ROUND()
 
 // CLASS #8: ROUND (ID, SCORE, CUSTOMERS_SERVED, REVENUE, WON?, SETTINGS{}, PROGRESS_BAR{}, TIMER{})
-// ---------------> GET(), SET(), INCREMENT_SCORE(), INCREMENT_CUSTOMERS_SERVED(), INCREMENT_REVENUE()
+class Round {
+  constructor(
+    id = 1,
+    // score = 0,
+    customers_served = 0,
+    revenue = 0,
+    won = false
+    // settings,
+    // progress_bar,
+    // timer
+  ) {
+    (this.id = id),
+      // this.score = score,
+      (this.customers_served = customers_served),
+      (this.revenue = revenue),
+      (this.won = won),
+      this.settings,
+      this.progress_bar,
+      this.timer;
+  }
 
+  incrementCustomersServed() {
+    this.customers_served++;
+  }
+
+  incrementRevenue(revenue) {
+    this.revenue += revenue ? revenue : 0;
+  }
+}
 // TODO: ? DO WE NEED TO ADD FUNCTIONS TO CREATE SETTINGS/ PROGRESS_BAR / TIMER?
 
 // CLASS #9: SETTINGS (ID, TOTAL_CUSTOMERS, TOTAL_REVENUE, TOTAL_TIME, DIFFICULTY[EASY,MEDIUM,HARD])
 // ---------------> GET(), SET()
+class Settings {
+  constructor(
+    id = 1,
+    total_customers = 6,
+    total_revenue = 30,
+    total_time_minutes = 1,
+    difficulty = 'EASY'
+  ) {
+    (this.id = id),
+      (this.total_customers = total_customers),
+      (this.total_revenue = total_revenue),
+      (this.total_time_minutes = total_time_minutes),
+      (this.difficulty = difficulty);
+  }
+}
 
 // CLASS #1: PROGRESS_BAR (ID, NAME, PROGRESS, GOAL, PERCENT_COMPLETE, STATUS[INITIALIZED,COMPLETE])
 // ---------------> GET(), SET(), INCREMENT(), INITIALIZE(GOAL), INCREMENT_PROGRESS(), INCREMENT_PERCENT_COMPLETE(), GOAL_REACHED()
@@ -214,13 +256,20 @@ class FoodItem {
 // CLASS #2: TIMER (ID, NAME, TIME, NOTIFICATION_TIME)
 // ---------------> GET(), SET(), INCREMENT(), INITIALIZE(TIME), NOTIFY(), EXPIRE()
 
-const updateFoodItem = food_item => {
-  food_item.update_status('cooking');
-  // find elem in dom
-  //
-};
-
 // APPLICATION LOGIC
+
+const customerNames = [
+  'lady_burgundy',
+  'lady_orange',
+  'lady_pink',
+  'lady_yellow',
+  'man_black',
+  'man_blue',
+  'man_green',
+  'man_peach',
+  'man_red',
+  'man_teal'
+];
 
 const foodItemNames = [
   'cocktail',
@@ -234,6 +283,9 @@ const foodItemNames = [
 ];
 const menu = [];
 const kitchen = [];
+const cafeCustomers = [];
+const cafeSeating = [];
+let currentRound;
 
 const App = {
   gameOver: false,
@@ -274,20 +326,76 @@ const App = {
         delayedFunction !== undefined && argument !== undefined
           ? delayedFunction(argument)
           : console.log('no function defined');
-        //document.getElementById('demo').innerHTML = 'EXPIRED';
-        //console.log(seconds, ' seconds passed for', argument);
       }
     }, 1000);
 
     return timerInterval;
   },
 
-  getFoodItemURL: food => {
-    return `images/food/${food}.png`;
+  round: {
+    startRound: () => {
+      let roundOne = new Round();
+      let settingsOne = new Settings();
+      // let progressBarOne = new ProgressBar(settingsOne.total_customers);
+      //let timerOne = new Timer(settingsOne.total_time_minutes);
+
+      // update round with settings, assign it a progress bar and a timer
+      roundOne.settings = settingsOne;
+      // roundOne.progress_bar = progressBarOne;
+      // roundOne.timer = timerOne;
+
+      // open modal with round info
+      return roundOne;
+    }
   },
 
   customer: {
     // customer logic
+    getImageURL: customer => {
+      return `images/customers/${customer}.png`;
+    },
+    createCustomers: () => {
+      let id = 1;
+
+      // get randomized array of customer names
+      const customers = App.shuffleArray(customerNames);
+      customers.splice(
+        currentRound.settings.total_customers,
+        customers.length - currentRound.settings.total_customers
+      );
+
+      // create customer objects and append them to the menu array
+      for (nextCustomer of customers) {
+        let cafeCustomer = new Customer(
+          id,
+          nextCustomer,
+          App.customer.getImageURL(nextCustomer)
+        );
+        //console.log(item);
+        cafeCustomers.push(cafeCustomer);
+        id++;
+      }
+
+      console.log('customer line up created', cafeCustomers);
+    },
+    seatEmpty: () => {
+      // console.log(cafeSeating.length);
+      return cafeSeating.length < 3 ? true : false;
+    },
+    seatCustomers: () => {
+      let customerCount = cafeCustomers.length;
+      for (let c = 0; c < customerCount; c++) {
+        let customer = cafeCustomers[c];
+        //console.log('customer', customer);
+        if (App.customer.seatEmpty()) {
+          // console.log(`seating customer #${customer.id}`);
+          cafeSeating.push(customer);
+          cafeCustomers.splice(1, 1);
+          console.log('cafe seating', cafeSeating);
+          console.log('cafe customers', cafeCustomers);
+        }
+      }
+    }
   },
 
   order: {
@@ -296,7 +404,9 @@ const App = {
 
   food: {
     // food logic
-
+    getImageURL: food => {
+      return `images/food/${food}.png`;
+    },
     createMenu: () => {
       let id = 1;
 
@@ -305,7 +415,7 @@ const App = {
 
       // create FoodItem objects and append them to the menu array
       for (foodItem of foodItems) {
-        let item = new FoodItem(id, foodItem, App.getFoodItemURL(foodItem));
+        let item = new FoodItem(id, foodItem, App.food.getImageURL(foodItem));
         //console.log(item);
         menu.push(item);
         id++;
@@ -339,7 +449,7 @@ const App = {
       for (let p = 1; p < 9; p++) {
         let pot = new Pot(p, menu[p - 1]);
         kitchen.push(pot);
-        console.log(pot);
+        //console.log(pot);
       }
       console.log('pots created and added to kitchen:', kitchen);
     }
@@ -357,10 +467,20 @@ const App = {
 $(() => {
   // TODO: ADD GAME LOGIC
   console.log('cafe chozen is open for business!');
+  currentRound = App.round.startRound();
+  //console.log(currentRound);
+
+  // CUSTOMER
+  App.customer.createCustomers();
+  App.customer.seatCustomers();
+  UI.customer.seatCustomers();
+
+  // ORDER
+
+  // KITCHEN (FOOD / POTS)
   App.food.createMenu();
   App.pot.addToKitchen();
 
-  // update UI with menu
   UI.pot.addToKitchen();
   UI.food.addToPots();
 

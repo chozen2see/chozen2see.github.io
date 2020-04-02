@@ -2,6 +2,33 @@ const UI = {
   // addTextToDiv: () => {},
   // changeImgSize: () => {}
   game: {},
+
+  customer: {
+    seatCustomers: () => {
+      let id = 1;
+      cafeSeating.forEach(customer => {
+        console.log(id);
+        // grab customer div
+        const $customerDiv = $(`.customer-${id}`);
+        // console.log($customerDiv);
+
+        // add keyframe div
+        const $keyframe = $('<div>').addClass(`customer-keyframe-${id}`);
+        $keyframe.appendTo($customerDiv);
+
+        // add image
+        const $img = $('<img>')
+          .addClass(`customer-img-${id}`)
+          .attr({
+            src: customer.image,
+            alt: customer.name,
+            draggable: 'false'
+          });
+        $img.appendTo($keyframe);
+        id++;
+      });
+    }
+  },
   food: {
     addToPots: () => {
       menu.forEach(foodItem => {
@@ -23,7 +50,7 @@ const UI = {
             src: foodItem.image,
             alt: `image of ${foodItem.name}`,
             id: `food-image-${id}`,
-            draggable: 'false'
+            draggable: 'false' // do not allow the food image to drag separately. must drap pot
           });
 
         // add food image to food item div
@@ -76,12 +103,10 @@ const UI = {
 
         // create pot div
         const $potDiv = $('<div>')
-          .addClass('pot')
+          .addClass('pot ui-draggable')
           .attr({
-            id: `pot-${id}`,
-            draggable: 'false'
+            id: `pot-${id}` //,draggable: 'false'
           });
-
         // create pot label
         const $potLabelP = $('<p>')
           .addClass('pot-label')
@@ -107,9 +132,24 @@ const UI = {
     updateInterface: (pot, draggable = 'false') => {
       // update the pot label in the DOM
       $(`#pot-label-button-${pot.id}`).text(pot.label);
-
+      // console.log(draggable);
       // make the pot in the DOM draggable?
-      $(`#pot-${pot.id}`).attr('draggable', draggable);
+      // $(`#pot-${pot.id}`).attr('draggable', draggable);
+      if (draggable === 'true') {
+        $(`#pot-${pot.id}`).draggable({
+          containment: '.container',
+          cursor: 'grab',
+          opacity: 0.8,
+          revert: true,
+          scope: pot.food_item.name,
+          zIndex: 100
+        });
+        $(`#pot-${pot.id}`).draggable('enable');
+      } else {
+        $(`#pot-${pot.id}`).draggable('disable');
+      }
+
+      // $(`#pot-${pot.id}`).attr('draggable', draggable);
     },
 
     ready: pot => {

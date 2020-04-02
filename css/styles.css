@@ -329,7 +329,7 @@ footer {
 
 @keyframes approach-counter-right {
   0% {
-    transform: translateX(-1000px);
+    transform: translateX(-100px);
     opacity: 0;
   }
   75% {
@@ -344,7 +344,7 @@ footer {
 
 @keyframes approach-counter-left {
   0% {
-    transform: translateX(1000px);
+    transform: translateX(100px);
     opacity: 0;
   }
   75% {
@@ -389,12 +389,12 @@ footer {
 
 /* wall bottom */
 
-.wall-bottom {
+.service-counter {
   display: grid;
   grid-template-rows: 15% 4fr 1fr;
 }
 
-.wall-bottom-order {
+.service-counter-order {
   display: grid;
   grid-template-rows: 1fr;
   grid-template-columns: auto 14% 18% 14% 18% 14% auto;
@@ -402,26 +402,26 @@ footer {
 
 /* -----> TODO: MAKE RESPONSIVE & ADJUST SIZE ???*/
 
-.order-3,
-.order-2,
-.order-1 {
+.placemat-3,
+.placemat-2,
+.placemat-1 {
   border-radius: 20px;
   border: 10px solid var(--body-background);
   background-color: var(--lady-yellow);
   padding: 1em;
 }
 
-.order-keyframe-2 {
+.order-2 {
   animation: place-order 15s 1;
   /* animation-delay: 20s; */
 }
 
-.order-keyframe-1 {
+.order-1 {
   animation: place-order 10s 1;
   /* animation-delay: 10s; */
 }
 
-.order-keyframe-3 {
+.order-3 {
   animation: place-order 20s 1;
   /* animation-delay: 30s; */
 }
@@ -561,7 +561,7 @@ footer {
 }
 
 .raw {
-  opacity: 0.3;
+  opacity: 0.4;
 }
 
 .cooking {
