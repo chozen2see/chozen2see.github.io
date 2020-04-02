@@ -584,6 +584,10 @@ footer {
   /* make item draggable via JS */
 }
 
+.expired {
+  opacity: 0.1;
+}
+
 /*********************** w3schools.com css ***********************/
 .w3-light-grey,
 .w3-hover-light-grey:hover,

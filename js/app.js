@@ -31,9 +31,9 @@ const placemat_green = 'var(--man-green)';
 // TODO #9: A USER SHOULD BE ABLE TO SEE THE CUSTOMER PLACE AN ORDER (ORDER FUNCTION)
 // TODO #10: A USER SHOULD BE ABLE TO SEE HOW MUCH TIME REMAINS TO SERVE THE CUSTOMER (TIMER: CUSTOMER SERVICE) - PLACEMAT FADES TO RED
 // TODO #11: A USER SHOULD BE ABLE TO DETERMINE WHEN THE CUSTOMER IS GETTING ANGRY (COLOR OF ORDER GRADUALLY CHANGES FROM ORANGE TO RED OVER GIVEN TIME (30 SECONDS))
-// TODO #12: A USER SHOULD BE ABLE TO DETERMINE IF AN ITEM NEEDS TO BE COOKED (FOOD ITEM: RAW STATE)
-// TODO #13: A USER SHOULD BE ABLE TO COOK A FOOD ITEM  (COOK FUNCTION)
-// TODO #14: A USER SHOULD BE ABLE TO DETERMINE WHEN A FOOD ITEM HAS BEEN COOKED AND IS READY TO SERVE (FOOD ITEM: READY STATE)
+// DONE #12: A USER SHOULD BE ABLE TO DETERMINE IF AN ITEM NEEDS TO BE COOKED (FOOD ITEM: RAW STATE)
+// DONE #13: A USER SHOULD BE ABLE TO COOK A FOOD ITEM  (COOK FUNCTION)
+// DONE #14: A USER SHOULD BE ABLE TO DETERMINE WHEN A FOOD ITEM HAS BEEN COOKED AND IS READY TO SERVE (FOOD ITEM: READY STATE)
 // TODO #15: A USER SHOULD BE ABLE TO SERVE THE FOOD ITEM BY DRAGGING THE ITEM ON TOP OF THE CUSTOMER'S ORDER (SERVE FUNCTION)
 // TODO #19: A USER SHOULD BE ABLE TO WATCH A CUSTOMER LEAVE THE RESTAURANT (EXIT RESTAURANT FUNCTION)
 
@@ -153,11 +153,6 @@ class Pot {
     this.label = 'DISCARD';
     console.log(`Pot #${this.id} is ready to be emptied.`);
   }
-
-  empty() {
-    this.food_item.reset();
-    this.reset();
-  }
 } // end class Pot
 
 // CLASS #5: FOOD_ITEM (ID, NAME, IMAGE, COST, [EXPIRATION_TIME], [COOK_TIME], STATUS[RAW,COOKING,COOKED,EXPIRED])
@@ -258,14 +253,33 @@ const App = {
     return arr;
   },
 
-  timer: seconds => {
-    for (let s = 0; s < seconds; seconds++) {
-      for (let i = 0; i < 1000; i++) {
-        let millisec = i;
+  delayFunction: (
+    seconds,
+    delayedFunction = undefined,
+    argument = undefined
+  ) => {
+    const countDownTime = new Date().getTime() + seconds * 1000;
+
+    let timerInterval = setInterval(function() {
+      // Get today's date and time
+      var now = new Date().getTime();
+
+      // Find the distance between now and the count down time
+      let distance = countDownTime - now;
+      let s = Math.floor((distance % (1000 * 60)) / 1000);
+
+      // If the count down is over, write some text
+      if (distance < 0) {
+        clearInterval(timerInterval);
+        delayedFunction !== undefined && argument !== undefined
+          ? delayedFunction(argument)
+          : console.log('no function defined');
+        //document.getElementById('demo').innerHTML = 'EXPIRED';
+        //console.log(seconds, ' seconds passed for', argument);
       }
-      let sec = s;
-      console.log(sec);
-    }
+    }, 1000);
+
+    return timerInterval;
   },
 
   getFoodItemURL: food => {
@@ -292,12 +306,30 @@ const App = {
       // create FoodItem objects and append them to the menu array
       for (foodItem of foodItems) {
         let item = new FoodItem(id, foodItem, App.getFoodItemURL(foodItem));
-        console.log(item);
+        //console.log(item);
         menu.push(item);
         id++;
       }
 
       console.log('menu created', menu);
+    },
+
+    cookFoodItem: (foodItem, currentPot) => {
+      // cook food item
+      UI.pot.toggleLabelVisibility(currentPot); // hidden
+      UI.food.cook(foodItem);
+      App.delayFunction(8, UI.food.ready, foodItem);
+
+      // UI.food.ready(foodItem);
+      App.delayFunction(7, UI.pot.ready, currentPot);
+      // UI.pot.ready(currentPot);
+      App.delayFunction(8, UI.pot.toggleLabelVisibility, currentPot);
+      // UI.pot.toggleLabelVisibility(currentPot); // visible
+    },
+
+    startExpiration: (foodItem, currentPot) => {
+      App.delayFunction(20, UI.pot.spoiled, currentPot);
+      App.delayFunction(20, UI.food.expired, foodItem);
     }
   },
 
@@ -310,6 +342,13 @@ const App = {
         console.log(pot);
       }
       console.log('pots created and added to kitchen:', kitchen);
+    }
+  },
+
+  kitchen: {
+    emptyPot: (food_item, pot) => {
+      UI.food.reset(food_item); //, pot.label.toLowerCase()
+      UI.pot.reset(pot);
     }
   }
 };
@@ -324,4 +363,6 @@ $(() => {
   // update UI with menu
   UI.pot.addToKitchen();
   UI.food.addToPots();
+
+  //App.secondsTimer(5);
 });

@@ -1,6 +1,7 @@
 const UI = {
   // addTextToDiv: () => {},
   // changeImgSize: () => {}
+  game: {},
   food: {
     addToPots: () => {
       menu.forEach(foodItem => {
@@ -33,24 +34,36 @@ const UI = {
       });
       console.log('ui updated pots with food', kitchen);
     },
+    updateInterface: (food_item, classToRemove) => {
+      // find food item div in dom, remove current class, and add new class
+      $(`#food-item-${food_item.id}`)
+        .removeClass(classToRemove)
+        .addClass(food_item.status.toLowerCase());
+    },
 
     cook: food_item => {
       // set food item status to cooking
       food_item.cook();
-
-      // find food item div in dom, remove current class, and add cooking class
-      $(`#food-item-${food_item.id}`)
-        .removeClass('raw')
-        .addClass(food_item.status.toLowerCase());
+      UI.food.updateInterface(food_item, 'raw');
     },
     ready: food_item => {
       // set food item status to cooked
       food_item.ready();
 
-      // find food item div in dom, remove current class, and add cooked class
-      $(`#food-item-${food_item.id}`)
-        .removeClass('cooking')
-        .addClass(food_item.status.toLowerCase());
+      UI.food.updateInterface(food_item, 'cooking');
+    },
+    expired: food_item => {
+      // set food item status to expired
+      food_item.expired();
+      UI.food.updateInterface(food_item, 'cooked');
+    },
+    reset: food_item => {
+      //, reason = 'cooked'
+      // reset food item status to raw
+      let reason = food_item.status.toLocaleLowerCase();
+      food_item.reset();
+      // food could have been 'cooked' or 'expired' -- need to TEST this
+      UI.food.updateInterface(food_item, reason);
     }
   },
 
@@ -86,20 +99,37 @@ const UI = {
 
       console.log('ui updated with pots in the kitchen', kitchen);
     },
+
     toggleLabelVisibility: pot => {
       $(`#pot-label-button-${pot.id}`).toggleClass('hidden');
     },
+
+    updateInterface: (pot, draggable = 'false') => {
+      // update the pot label in the DOM
+      $(`#pot-label-button-${pot.id}`).text(pot.label);
+
+      // make the pot in the DOM draggable?
+      $(`#pot-${pot.id}`).attr('draggable', draggable);
+    },
+
     ready: pot => {
       // pot is ready to serve.
 
       // set the label
       pot.ready();
 
-      // update the pot label in the DOM
-      $(`#pot-label-button-${pot.id}`).text(pot.label);
+      UI.pot.updateInterface(pot, 'true');
+    },
 
-      // make the pot in the DOM draggable
-      $(`#pot-${pot.id}`).attr('draggable', 'true');
+    spoiled: pot => {
+      pot.spoiled();
+      UI.pot.updateInterface(pot);
+    },
+
+    reset: pot => {
+      pot.reset();
+      UI.pot.updateInterface(pot);
+      //console.log('resetting pot UI', pot);
     }
   }
 };
