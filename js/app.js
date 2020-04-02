@@ -132,7 +132,7 @@ class Order {
 
 // CLASS #6: POT (ID, LABEL[COOK, SERVE, DISCARD], FOOD_ITEM{})
 class Pot {
-  constructor(id, label = 'COOK', food_item) {
+  constructor(id, food_item, label = 'COOK') {
     (this.id = id), (this.label = label), (this.food_item = food_item);
   }
 
@@ -225,14 +225,8 @@ const updateFoodItem = food_item => {
   //
 };
 
-const cookFoodItem = food_item => {
-  food_item.cook();
-  // find elem in dom
-};
-
 // APPLICATION LOGIC
 
-const menu = [];
 const foodItemNames = [
   'cocktail',
   'ice_cream',
@@ -243,6 +237,8 @@ const foodItemNames = [
   'turkey',
   'wine'
 ];
+const menu = [];
+const kitchen = [];
 
 const App = {
   gameOver: false,
@@ -260,6 +256,16 @@ const App = {
       arr[y] = z;
     }
     return arr;
+  },
+
+  timer: seconds => {
+    for (let s = 0; s < seconds; seconds++) {
+      for (let i = 0; i < 1000; i++) {
+        let millisec = i;
+      }
+      let sec = s;
+      console.log(sec);
+    }
   },
 
   getFoodItemURL: food => {
@@ -281,20 +287,29 @@ const App = {
       let id = 1;
 
       // get randomized array of food item names
-      const menuItems = App.shuffleArray(foodItemNames);
+      const foodItems = App.shuffleArray(foodItemNames);
 
-      // create a food item object and append it to the menu
-      for (menuItem of menuItems) {
-        let food = new FoodItem(id, menuItem, App.getFoodItemURL(menuItem));
-        console.log(food);
-        menu.push(food);
+      // create FoodItem objects and append them to the menu array
+      for (foodItem of foodItems) {
+        let item = new FoodItem(id, foodItem, App.getFoodItemURL(foodItem));
+        console.log(item);
+        menu.push(item);
         id++;
       }
 
       console.log('menu created', menu);
+    }
+  },
 
-      // update UI with menu
-      UI.food.populateContainer(menu);
+  pot: {
+    addToKitchen: () => {
+      // create array of pot objects with food in them and add to kitchen array
+      for (let p = 1; p < 9; p++) {
+        let pot = new Pot(p, menu[p - 1]);
+        kitchen.push(pot);
+        console.log(pot);
+      }
+      console.log('pots created and added to kitchen:', kitchen);
     }
   }
 };
@@ -304,4 +319,9 @@ $(() => {
   // TODO: ADD GAME LOGIC
   console.log('cafe chozen is open for business!');
   App.food.createMenu();
+  App.pot.addToKitchen();
+
+  // update UI with menu
+  UI.pot.addToKitchen();
+  UI.food.addToPots();
 });
