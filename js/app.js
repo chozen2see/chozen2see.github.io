@@ -3,16 +3,7 @@ const placemat_yellow = 'var(--lady-yellow)';
 const placemat_red = 'var(--man-red)';
 const placemat_green = 'var(--man-green)';
 
-const App = {
-  gameOver: false
-  // generateRandomNumber: () => {},
-  // shuffleArray: () => {}
-};
-
-$(() => {
-  // TODO: ADD GAME LOGIC
-  console.log('cafe chozen is open for business!');
-});
+// --> GAME / APP STORIES
 
 // TODO #1: CUSTOMER PROGRESS BAR - INCREASES WHEN CUSTOMER IS SERVED CORRECT FOOD ITEM IN ALOTTED TIME. WHEN ALL CUSTOMERS SERVED, LEVEL IS OVER (IF TIME STILL REMAINING ON TIMER)
 // TODO #2: TIMER - EACH LEVEL HAS SET TIME TO COMPLETE. STARTS WHEN GAME STARTS. WHEN IT RUNS OUT LEVEL IS OVER.
@@ -23,24 +14,28 @@ $(() => {
 // TODO #5: A USER SHOULD BE NOTIFIED HOW MANY CUSTOMERS WILL ENTER THE RESTAURANT DURING A ROUND (CUSTOMER OBJECTS)
 // TODO #6: A USER SHOULD BE ABLE TO SEE HOW MANY CUSTOMERS THEY HAVE SERVED CORRECTLY (CUSTOMER PROGRESS BAR) OUT OF THE TOTAL CUSTOMERS AVAILABLE IN THE ROUND
 // TODO #7: A USER SHOULD BE ABLE TO SEE HOW MUCH TIME IS REMAINING ONCE THE ROUND STARTS (TIMER: ROUND)
+
+// TODO #16: A USER SHOULD BE ABLE TO DETERMINE IF THE FOOD ITEM SERVED MATCHES THE ORDER (CHECK ORDER FUNCTION) (COLOR OF ORDER TURNS GREEN. MAYBE A SOUND?? THANK YOU!)
+// TODO #17: A USER SHOULD BE ABLE TO SEE THE CUSTOMERS PROGRESS BAR INCREASE IF THE FOOD ITEM SERVED MATCHES THE ORDER WITHIN THE ALLOTTED TIME (INCREASE CUSTOMER PROGRESS BAR)
+// TODO #18: A USER SHOULD BE ABLE TO RECEIVE A NOTIFICATION IF THE FOOD ITEM SERVED DOES NOT MATCH THE ORDER (INCORRECT ORDER FUNCTION - SHAKES ORDER - MAYBE SOUND - CUSTOMER LEAVES)
+// TODO #20: A USER SHOULD BE NOTIFIED IF THE TIME EXPIRES FOR THE ROUND
+// TODO #21: A USER SHOULD BE ABLE TO DETERMINE HOW THEY PERFORMED DURING THE ROUND (MODAL)
+// TODO #22: A USER SHOULD BE ABLE TO PROCEED TO THE NEXT ROUND IF THEY WON THE CURRENT ROUND (MODAL BUTTON)
+// TODO #23: A USER SHOULD BE ABLE TO START A NEW GAME (OR REPEAT THE ROUND???) IF THEY LOSS THE CURRENT ROUND (MODAL BUTTON)
+// TODO #24: A USER SHOULD BE ABLE TO DETERMINE IF THEY BEAT THE GAME
+// TODO #25: A USER SHOULD BE ABLE TO CLOSE THE BROSWER AND PRESERVE THE GAME STATE (SAVE GAME)
+
+// --> CUSTOMER / FOOD STORIES
+
 // TODO #8: A USER SHOULD BE ABLE TO WATCH A CUSTOMER ENTER THE RESTAURANT AND APPROACH THE COUNTER (ENTER RESTAURANT FUNCTION).
 // TODO #9: A USER SHOULD BE ABLE TO SEE THE CUSTOMER PLACE AN ORDER (ORDER FUNCTION)
-// TODO #10: A USER SHOULD BE ABLE TO SEE HOW MUCH TIME REMAINS TO SERVE THE CUSTOMER (TIMER: CUSTOMER SERVICE)
+// TODO #10: A USER SHOULD BE ABLE TO SEE HOW MUCH TIME REMAINS TO SERVE THE CUSTOMER (TIMER: CUSTOMER SERVICE) - PLACEMAT FADES TO RED
 // TODO #11: A USER SHOULD BE ABLE TO DETERMINE WHEN THE CUSTOMER IS GETTING ANGRY (COLOR OF ORDER GRADUALLY CHANGES FROM ORANGE TO RED OVER GIVEN TIME (30 SECONDS))
 // TODO #12: A USER SHOULD BE ABLE TO DETERMINE IF AN ITEM NEEDS TO BE COOKED (FOOD ITEM: RAW STATE)
 // TODO #13: A USER SHOULD BE ABLE TO COOK A FOOD ITEM  (COOK FUNCTION)
 // TODO #14: A USER SHOULD BE ABLE TO DETERMINE WHEN A FOOD ITEM HAS BEEN COOKED AND IS READY TO SERVE (FOOD ITEM: READY STATE)
 // TODO #15: A USER SHOULD BE ABLE TO SERVE THE FOOD ITEM BY DRAGGING THE ITEM ON TOP OF THE CUSTOMER'S ORDER (SERVE FUNCTION)
-// TODO #16: A USER SHOULD BE ABLE TO DETERMINE IF THE FOOD ITEM SERVED MATCHES THE ORDER (CHECK ORDER FUNCTION) (COLOR OF ORDER TURNS GREEN. MAYBE A SOUND?? THANK YOU!)
-// TODO #17: A USER SHOULD BE ABLE TO SEE THE CUSTOMERS PROGRESS BAR INCREASE IF THE FOOD ITEM SERVED MATCHES THE ORDER WITHIN THE ALLOTTED TIME (INCREASE CUSTOMER PROGRESS BAR)
-// TODO #18: A USER SHOULD BE ABLE TO RECEIVE A NOTIFICATION IF THE FOOD ITEM SERVED DOES NOT MATCH THE ORDER (INCORRECT ORDER FUNCTION - SHAKES ORDER - MAYBE SOUND - CUSTOMER LEAVES)
-// TODO: A USER SHOULD BE ABLE TO WATCH A CUSTOMER LEAVE THE RESTAURANT (EXIT RESTAURANT FUNCTION)
-// TODO: A USER SHOULD BE NOTIFIED IF THE TIME EXPIRES FOR THE ROUND
-// TODO #19: A USER SHOULD BE ABLE TO DETERMINE HOW THEY PERFORMED DURING THE ROUND (MODAL)
-// TODO #20: A USER SHOULD BE ABLE TO PROCEED TO THE NEXT ROUND IF THEY WON THE CURRENT ROUND (MODAL BUTTON)
-// TODO #21: A USER SHOULD BE ABLE TO START A NEW GAME (OR REPEAT THE ROUND???) IF THEY LOSS THE CURRENT ROUND (MODAL BUTTON)
-// TODO #22: A USER SHOULD BE ABLE TO DETERMINE IF THEY BEAT THE GAME
-// TODO #23: A USER SHOULD BE ABLE TO CLOSE THE BROSWER AND PRESERVE THE GAME STATE (SAVE GAME)
+// TODO #19: A USER SHOULD BE ABLE TO WATCH A CUSTOMER LEAVE THE RESTAURANT (EXIT RESTAURANT FUNCTION)
 
 //-----> CUSTOMER / FOOD CLASSES
 
@@ -55,6 +50,7 @@ class Customer {
     seat = 0,
     patience_level = 'HIGH',
     direction = 'LEFT',
+    delay = '5s',
     order
   ) {
     (this.id = id),
@@ -64,11 +60,18 @@ class Customer {
       (this.seat = seat),
       (this.patience_level = patience_level),
       (this.direction = direction),
+      (this.delay = delay),
       (this.order = order);
   }
 
   set_direction(direction) {
+    // which way will the customer enter and exit the cafe
     this.direction = direction;
+  }
+
+  set_delay(delay) {
+    // how long will it take for customer to approach the counter
+    this.delay = delay;
   }
 
   seated(seat) {
@@ -83,13 +86,20 @@ class Order {
     seat = 0, // seat has not been assigned
     status = 'CREATED',
     placemat_color = placemat_yellow,
+    delay = '5s',
     food_item
   ) {
     (this.id = id),
       (this.seat = seat),
       (this.status = status),
       (this.placemat_color = placemat_color),
+      (this.delay = delay),
       (this.food_item = food_item);
+  }
+
+  set_delay(delay) {
+    // how long will it take for the order to be placed
+    this.delay = delay;
   }
 
   create(seat) {
@@ -215,7 +225,83 @@ const updateFoodItem = food_item => {
   //
 };
 
-const cookItem = food_item => {
+const cookFoodItem = food_item => {
   food_item.cook();
   // find elem in dom
 };
+
+// APPLICATION LOGIC
+
+const menu = [];
+const foodItemNames = [
+  'cocktail',
+  'ice_cream',
+  'noodles',
+  'pizza',
+  'tea',
+  'tofu',
+  'turkey',
+  'wine'
+];
+
+const App = {
+  gameOver: false,
+
+  generateRandomNumber: (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  },
+
+  shuffleArray: arr => {
+    var x, y, z;
+    for (x = arr.length - 1; x > 0; x--) {
+      y = Math.floor(Math.random() * x);
+      z = arr[x];
+      arr[x] = arr[y];
+      arr[y] = z;
+    }
+    return arr;
+  },
+
+  getFoodItemURL: food => {
+    return `images/food/${food}.png`;
+  },
+
+  customer: {
+    // customer logic
+  },
+
+  order: {
+    // order logic
+  },
+
+  food: {
+    // food logic
+
+    createMenu: () => {
+      let id = 1;
+
+      // get randomized array of food item names
+      const menuItems = App.shuffleArray(foodItemNames);
+
+      // create a food item object and append it to the menu
+      for (menuItem of menuItems) {
+        let food = new FoodItem(id, menuItem, App.getFoodItemURL(menuItem));
+        console.log(food);
+        menu.push(food);
+        id++;
+      }
+
+      console.log('menu created', menu);
+
+      // update UI with menu
+      UI.food.populateContainer(menu);
+    }
+  }
+};
+
+// jQuery onLoad
+$(() => {
+  // TODO: ADD GAME LOGIC
+  console.log('cafe chozen is open for business!');
+  App.food.createMenu();
+});
