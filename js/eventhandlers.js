@@ -1,0 +1,4 @@
+const EventHandlers = {
+  // onClickDoSomething: () => {},
+  // onClickDoThis: () => {}
+};

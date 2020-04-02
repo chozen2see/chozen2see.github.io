@@ -1,0 +1,4 @@
+const UI = {
+  // addTextToDiv: () => {},
+  // changeImgSize: () => {}
+};
