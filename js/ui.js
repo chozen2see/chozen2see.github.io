@@ -8,6 +8,8 @@ const UI = {
       let id = 1;
       cafeSeating.forEach(customer => {
         customer.seated(id);
+        // customerLog[customer.id - 1].seated(id);
+
         console.log(customer.seat);
 
         // grab customer div
@@ -37,12 +39,25 @@ const UI = {
 
       App.delayFunction(10, () => {
         $customerDiv.remove();
+        UI.customer.updateInterface(cafeSeating.id);
       });
 
-      cafeSeating.splice(0, 1);
+      ////////////////////////////////
+      // TODO: TAKE THIS LAST PART OF CODE AND MAKE INTO
+      // FUNCTION THAT UPDATES USER STATS / PROGRESS BAR BASED ON CUST LOG
+      ////////////////////////////////
+
+      // remove customer from seating and add to customer Log for stats (update progress bar)
+      customerLog.push(cafeSeating.splice(0, 1));
       console.log('cafe seating', cafeSeating);
       console.log(`customer #${id} has left`);
+
+      id === 3 ? console.log(customerLog) : undefined;
     }
+    // ,updateInterface: customersServed => {
+    //   let width =
+    //     (customersServed / currentRound.settings.total_customers) * 100;
+    // }
   },
   food: {
     addToPots: () => {

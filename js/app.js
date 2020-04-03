@@ -401,16 +401,16 @@ const App = {
         id++;
       }
 
-      customerLog = cafeCustomers.slice(0);
+      // customerLog = cafeCustomers.slice(0);
 
-      console.log('customer line up created', customerLog);
+      // console.log('customer line up created', customerLog);
     },
     seatEmpty: () => {
       console.log('cafe seating', cafeSeating.length);
       return cafeSeating.length < 3 ? true : false;
     },
     seatCustomers: () => {
-      let customerCount = customerLog.length;
+      let customerCount = cafeCustomers.length;
       // const
 
       for (let c = 0; c < customerCount; c++) {
@@ -507,15 +507,19 @@ $(() => {
   // TODO: ADD GAME LOGIC
   console.log('cafe chozen is open for business!');
   currentRound = App.round.create();
-  //console.log(currentRound);
+  let roundsToPlay = Math.ceil(currentRound.settings.total_customers / 3);
+  // console.log(roundsToPlay);
 
   App.customer.createCustomers();
 
   // App.round.start();
 
-  for (let i = 1; i < 3; i++) {
+  for (let i = 1; i <= roundsToPlay; i++) {
     // play two rounds
     App.delayFunction(i === 1 ? 2 : 40, App.round.start);
+    // add order function here
+
+    // console.log(customerLog);
   }
 
   // ROUND ONE
