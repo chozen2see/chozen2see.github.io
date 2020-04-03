@@ -7,13 +7,15 @@ const UI = {
     seatCustomers: () => {
       let id = 1;
       cafeSeating.forEach(customer => {
-        console.log(id);
+        customer.seated(id);
+        console.log(customer.seat);
+
         // grab customer div
         const $customerDiv = $(`.customer-${id}`);
         // console.log($customerDiv);
 
         // add keyframe div
-        const $keyframe = $('<div>').addClass(`customer-keyframe-${id}`);
+        const $keyframe = $('<div>').addClass(`customer-approach-${id}`);
         $keyframe.appendTo($customerDiv);
 
         // add image
@@ -27,6 +29,19 @@ const UI = {
         $img.appendTo($keyframe);
         id++;
       });
+    },
+    leave: id => {
+      const $customerDiv = $(`.customer-approach-${id}`);
+      $customerDiv.removeClass(`customer-approach-${id}`);
+      $customerDiv.addClass(`customer-leave-${id}`);
+
+      App.delayFunction(10, () => {
+        $customerDiv.remove();
+      });
+
+      cafeSeating.splice(0, 1);
+      console.log('cafe seating', cafeSeating);
+      console.log(`customer #${id} has left`);
     }
   },
   food: {

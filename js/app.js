@@ -284,7 +284,8 @@ const foodItemNames = [
 const menu = [];
 const kitchen = [];
 const cafeCustomers = [];
-const cafeSeating = [];
+let cafeSeating = [];
+let customerLog = [];
 let currentRound;
 
 const App = {
@@ -323,9 +324,18 @@ const App = {
       // If the count down is over, write some text
       if (distance < 0) {
         clearInterval(timerInterval);
-        delayedFunction !== undefined && argument !== undefined
-          ? delayedFunction(argument)
-          : console.log('no function defined');
+        if (delayedFunction !== undefined) {
+          if (argument !== undefined) {
+            delayedFunction(argument);
+          } else {
+            delayedFunction();
+          }
+        } else {
+          console.log('no function defined. using timer only.');
+        }
+        // delayedFunction !== undefined && argument !== undefined
+        //   ?
+        //   :
       }
     }, 1000);
 
@@ -333,7 +343,7 @@ const App = {
   },
 
   round: {
-    startRound: () => {
+    create: () => {
       let roundOne = new Round();
       let settingsOne = new Settings();
       // let progressBarOne = new ProgressBar(settingsOne.total_customers);
@@ -346,6 +356,21 @@ const App = {
 
       // open modal with round info
       return roundOne;
+    },
+    //   one: () => {
+    //       // CUSTOMER
+    // App.customer.createCustomers();
+    //     App.customer.seatCustomers();
+    //     UI.customer.seatCustomers();
+    //     App.delayFunction(20, App.customer.leave);
+    //   },
+
+    start: () => {
+      // CUSTOMER
+      App.customer.seatCustomers();
+      UI.customer.seatCustomers();
+      App.delayFunction(20, App.customer.leave);
+      // cafeSeating = [];
     }
   },
 
@@ -364,7 +389,7 @@ const App = {
         customers.length - currentRound.settings.total_customers
       );
 
-      // create customer objects and append them to the menu array
+      // create customer objects and append them to the cafe customer list
       for (nextCustomer of customers) {
         let cafeCustomer = new Customer(
           id,
@@ -376,25 +401,39 @@ const App = {
         id++;
       }
 
-      console.log('customer line up created', cafeCustomers);
+      customerLog = cafeCustomers.slice(0);
+
+      console.log('customer line up created', customerLog);
     },
     seatEmpty: () => {
-      // console.log(cafeSeating.length);
+      console.log('cafe seating', cafeSeating.length);
       return cafeSeating.length < 3 ? true : false;
     },
     seatCustomers: () => {
-      let customerCount = cafeCustomers.length;
+      let customerCount = customerLog.length;
+      // const
+
       for (let c = 0; c < customerCount; c++) {
-        let customer = cafeCustomers[c];
-        //console.log('customer', customer);
+        // get customer
+        let customer = cafeCustomers[0];
+
+        // if a seat is empty, add customer to cafe seating
         if (App.customer.seatEmpty()) {
-          // console.log(`seating customer #${customer.id}`);
+          console.log(`seating customer #${customer.id}`);
           cafeSeating.push(customer);
-          cafeCustomers.splice(1, 1);
+          cafeCustomers.splice(0, 1);
           console.log('cafe seating', cafeSeating);
           console.log('cafe customers', cafeCustomers);
         }
       }
+    },
+
+    leave: () => {
+      //let id = 1;
+      cafeSeating.forEach(customer => {
+        // customer leaves cafe
+        App.delayFunction(2 * customer.seat, UI.customer.leave, customer.seat);
+      });
     }
   },
 
@@ -467,13 +506,20 @@ const App = {
 $(() => {
   // TODO: ADD GAME LOGIC
   console.log('cafe chozen is open for business!');
-  currentRound = App.round.startRound();
+  currentRound = App.round.create();
   //console.log(currentRound);
 
-  // CUSTOMER
   App.customer.createCustomers();
-  App.customer.seatCustomers();
-  UI.customer.seatCustomers();
+
+  // App.round.start();
+
+  for (let i = 1; i < 3; i++) {
+    // play two rounds
+    App.delayFunction(i === 1 ? 2 : 40, App.round.start);
+  }
+
+  // ROUND ONE
+  //App.delayFunction(60, App.round.two);
 
   // ORDER
 
