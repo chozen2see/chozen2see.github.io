@@ -25,9 +25,11 @@
                 <div class="w3-container">
                   <span></span>
                   <div class="w3-burgundy w3-round-large">
+                    <!-- add w3-pink -->
                     <div
-                      class="w3-container w3-pink w3-round-large"
-                      style="width:70%"
+                      class="w3-container w3-round-large no-progress"
+                      style="width: 0%;"
+                      id="progress-bar"
                     >
                       CUSTOMERS
                     </div>
@@ -42,7 +44,7 @@
                   <div class="w3-burgundy w3-round-large">
                     <div
                       class="w3-container w3-green w3-round-large"
-                      style="width:80%"
+                      style="width: 80%;"
                     >
                       REVENUE
                     </div>
@@ -51,7 +53,9 @@
               </div>
               <div class="column"></div>
               <div class="stats-3">
-                <h2 class="stats-timer">TIMER <span> 00:00</span></h2>
+                <h2 class="stats-timer">
+                  TIMER &nbsp;<span id="timer">0:00</span>
+                </h2>
               </div>
               <div class="column"></div>
             </div>

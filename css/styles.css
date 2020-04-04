@@ -283,6 +283,11 @@ footer {
   /* background-color: orange; */
 }
 
+.no-progress {
+  color: white;
+  background-color: rgba(0, 0, 0, 0);
+}
+
 .wall-top-customer {
   margin-top: 20px;
   display: grid;

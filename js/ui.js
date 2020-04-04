@@ -1,12 +1,43 @@
 const UI = {
   // addTextToDiv: () => {},
   // changeImgSize: () => {}
-  game: {},
+  round: {
+    updateProgressBar: () => {
+      $('#progress-bar').css('width', currentRound.progress_bar);
+      //console.log('progress bar', currentRound.progress_bar);
+    },
+
+    initializeProgressBar: () => {
+      $('#progress-bar').removeClass('no-progress');
+      $('#progress-bar').addClass('w3-pink');
+    },
+
+    resetProgressBar: () => {
+      $('#progress-bar').removeClass('w3-pink');
+      $('#progress-bar').addClass('no-progress');
+    },
+
+    updateTimer: () => {
+      if (currentRound.timer >= 0) {
+        var minutes = Math.floor(currentRound.timer / 60000);
+        var seconds = ((currentRound.timer % 60000) / 1000).toFixed(0);
+
+        var timer = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+        $('#timer').text(timer);
+      } else {
+        // game over
+        clearTimeout(currentRoundTimer);
+        alert('game over');
+      }
+
+      currentRound.decrementTimer();
+    },
+  },
 
   customer: {
     seatCustomers: () => {
       let id = 1;
-      cafeSeating.forEach(customer => {
+      cafeSeating.forEach((customer) => {
         customer.seated(id);
         // customerLog[customer.id - 1].seated(id);
 
@@ -21,47 +52,40 @@ const UI = {
         $keyframe.appendTo($customerDiv);
 
         // add image
-        const $img = $('<img>')
-          .addClass(`customer-img-${id}`)
-          .attr({
-            src: customer.image,
-            alt: customer.name,
-            draggable: 'false'
-          });
+        const $img = $('<img>').addClass(`customer-img-${id}`).attr({
+          src: customer.image,
+          alt: customer.name,
+          draggable: 'false',
+        });
         $img.appendTo($keyframe);
         id++;
       });
     },
-    leave: id => {
+    leave: (id) => {
       const $customerDiv = $(`.customer-approach-${id}`);
       $customerDiv.removeClass(`customer-approach-${id}`);
       $customerDiv.addClass(`customer-leave-${id}`);
 
       App.delayFunction(10, () => {
         $customerDiv.remove();
-        UI.customer.updateInterface(cafeSeating.id);
       });
 
-      ////////////////////////////////
-      // TODO: TAKE THIS LAST PART OF CODE AND MAKE INTO
-      // FUNCTION THAT UPDATES USER STATS / PROGRESS BAR BASED ON CUST LOG
-      ////////////////////////////////
+      // remove customer from seating and add to customer Log for stats
 
-      // remove customer from seating and add to customer Log for stats (update progress bar)
       customerLog.push(cafeSeating.splice(0, 1));
       console.log('cafe seating', cafeSeating);
       console.log(`customer #${id} has left`);
 
+      // increase stats for round if customer order was completed successfully
+      App.round.customerServed();
+
       id === 3 ? console.log(customerLog) : undefined;
-    }
-    // ,updateInterface: customersServed => {
-    //   let width =
-    //     (customersServed / currentRound.settings.total_customers) * 100;
-    // }
+      //console.log('customers served', currentRound.customers_served);
+    },
   },
   food: {
     addToPots: () => {
-      menu.forEach(foodItem => {
+      menu.forEach((foodItem) => {
         //get id
         let id = foodItem.id;
 
@@ -80,7 +104,7 @@ const UI = {
             src: foodItem.image,
             alt: `image of ${foodItem.name}`,
             id: `food-image-${id}`,
-            draggable: 'false' // do not allow the food image to drag separately. must drap pot
+            draggable: 'false', // do not allow the food image to drag separately. must drap pot
           });
 
         // add food image to food item div
@@ -98,36 +122,36 @@ const UI = {
         .addClass(food_item.status.toLowerCase());
     },
 
-    cook: food_item => {
+    cook: (food_item) => {
       // set food item status to cooking
       food_item.cook();
       UI.food.updateInterface(food_item, 'raw');
     },
-    ready: food_item => {
+    ready: (food_item) => {
       // set food item status to cooked
       food_item.ready();
 
       UI.food.updateInterface(food_item, 'cooking');
     },
-    expired: food_item => {
+    expired: (food_item) => {
       // set food item status to expired
       food_item.expired();
       UI.food.updateInterface(food_item, 'cooked');
     },
-    reset: food_item => {
+    reset: (food_item) => {
       //, reason = 'cooked'
       // reset food item status to raw
       let reason = food_item.status.toLocaleLowerCase();
       food_item.reset();
       // food could have been 'cooked' or 'expired' -- need to TEST this
       UI.food.updateInterface(food_item, reason);
-    }
+    },
   },
 
   pot: {
     addToKitchen: () => {
       const $kitchenContainer = $('.kitchen-container');
-      kitchen.forEach(kitchenItem => {
+      kitchen.forEach((kitchenItem) => {
         //get id
         let id = kitchenItem.id;
 
@@ -135,7 +159,7 @@ const UI = {
         const $potDiv = $('<div>')
           .addClass('pot ui-draggable')
           .attr({
-            id: `pot-${id}` //,draggable: 'false'
+            id: `pot-${id}`, //,draggable: 'false'
           });
         // create pot label
         const $potLabelP = $('<p>')
@@ -155,7 +179,7 @@ const UI = {
       console.log('ui updated with pots in the kitchen', kitchen);
     },
 
-    toggleLabelVisibility: pot => {
+    toggleLabelVisibility: (pot) => {
       $(`#pot-label-button-${pot.id}`).toggleClass('hidden');
     },
 
@@ -172,7 +196,7 @@ const UI = {
           opacity: 0.8,
           revert: true,
           scope: pot.food_item.name,
-          zIndex: 100
+          zIndex: 100,
         });
         $(`#pot-${pot.id}`).draggable('enable');
       } else {
@@ -182,7 +206,7 @@ const UI = {
       // $(`#pot-${pot.id}`).attr('draggable', draggable);
     },
 
-    ready: pot => {
+    ready: (pot) => {
       // pot is ready to serve.
 
       // set the label
@@ -191,15 +215,15 @@ const UI = {
       UI.pot.updateInterface(pot, 'true');
     },
 
-    spoiled: pot => {
+    spoiled: (pot) => {
       pot.spoiled();
       UI.pot.updateInterface(pot);
     },
 
-    reset: pot => {
+    reset: (pot) => {
       pot.reset();
       UI.pot.updateInterface(pot);
       //console.log('resetting pot UI', pot);
-    }
-  }
+    },
+  },
 };
