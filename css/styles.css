@@ -288,6 +288,16 @@ footer {
   background-color: rgba(0, 0, 0, 0);
 }
 
+.game-over {
+  text-decoration: none;
+  color: var(--man-black);
+}
+.game-over:hover,
+.stats-2:hover {
+  color: white;
+  background-color: var(--lady-pink);
+}
+
 .wall-top-customer {
   margin-top: 20px;
   display: grid;
@@ -438,17 +448,21 @@ footer {
   padding: 1em;
 }
 
-.order-2 {
+.placemat-order-match {
+  background-color: var(--man-green);
+}
+
+.order-place-2 {
   animation: place-order 15s 1;
   /* animation-delay: 20s; */
 }
 
-.order-1 {
+.order-place-1 {
   animation: place-order 10s 1;
   /* animation-delay: 10s; */
 }
 
-.order-3 {
+.order-place-3 {
   animation: place-order 20s 1;
   /* animation-delay: 30s; */
 }
@@ -465,15 +479,30 @@ footer {
   }
 }
 
-@keyframes place-order {
+.order-clear-2 {
+  animation: clear-order 15s 1;
+  /* animation-delay: 20s; */
+}
+
+.order-clear-1 {
+  animation: clear-order 10s 1;
+  /* animation-delay: 10s; */
+}
+
+.order-clear-3 {
+  animation: clear-order 20s 1;
+  /* animation-delay: 30s; */
+}
+
+@keyframes clear-order {
   0% {
-    opacity: 0;
+    opacity: 1;
   }
   75% {
     opacity: 0;
   }
   100% {
-    opacity: 1;
+    opacity: 0;
   }
 }
 

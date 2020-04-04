@@ -21,7 +21,7 @@ const placemat_green = 'var(--man-green)';
 // TODO #20: A USER SHOULD BE NOTIFIED IF THE TIME EXPIRES FOR THE ROUND
 // TODO #21: A USER SHOULD BE ABLE TO DETERMINE HOW THEY PERFORMED DURING THE ROUND (MODAL)
 // TODO #22: A USER SHOULD BE ABLE TO PROCEED TO THE NEXT ROUND IF THEY WON THE CURRENT ROUND (MODAL BUTTON)
-// TODO #23: A USER SHOULD BE ABLE TO START A NEW GAME (OR REPEAT THE ROUND???) IF THEY LOSS THE CURRENT ROUND (MODAL BUTTON)
+// TODO #23: A USER SHOULD BE ABLE TO START A NEW GAME (OR REPEAT THE ROUND???) IF THEY LOSE THE CURRENT ROUND (MODAL BUTTON)
 // TODO #24: A USER SHOULD BE ABLE TO DETERMINE IF THEY BEAT THE GAME
 // TODO #25: A USER SHOULD BE ABLE TO CLOSE THE BROSWER AND PRESERVE THE GAME STATE (SAVE GAME)
 
@@ -82,18 +82,18 @@ class Customer {
 class Order {
   constructor(
     id,
+    food_item,
     seat = 0, // seat has not been assigned
     status = 'CREATED',
     placemat_color = placemat_yellow,
-    delay = '5s',
-    food_item
+    delay = '5s'
   ) {
     (this.id = id),
+      (this.food_item = food_item),
       (this.seat = seat),
       (this.status = status),
       (this.placemat_color = placemat_color),
-      (this.delay = delay),
-      (this.food_item = food_item);
+      (this.delay = delay);
   }
 
   set_delay(delay) {
@@ -101,17 +101,10 @@ class Order {
     this.delay = delay;
   }
 
-  // reset () {
-  create(seat) {
-    // order has been initialized for the seat, but is not visible on UI. customer is reading menu.
-    this.status = 'CREATED';
-    this.seat = seat; // remove this?
-    console.log(`Order #${this.id} has been created.`);
-  }
-
-  place() {
-    // order has been placed and will fade-in on UI
+  place(seat) {
+    // order has been placed for the seat and will fade-in on UI
     this.status = 'PLACED';
+    this.seat = seat; // remove this?
     console.log(`Order #${this.id} has been placed.`);
   }
 
@@ -205,13 +198,13 @@ class Round {
   constructor(
     id = 1,
     customers_served = 0,
-    revenue = 0,
+    number = 0,
     won = false,
     progress_bar = 0
   ) {
     (this.id = id),
       (this.customers_served = customers_served),
-      (this.revenue = revenue),
+      (this.number = number),
       (this.won = won),
       (this.progress_bar = progress_bar),
       this.timer,
@@ -247,7 +240,7 @@ class Settings {
     id = 1,
     total_customers = 6,
     total_revenue = 30,
-    total_time_minutes = 2,
+    total_time_minutes = 1,
     difficulty = 'EASY'
   ) {
     (this.id = id),
@@ -289,17 +282,23 @@ const foodItemNames = [
   'turkey',
   'wine',
 ];
+
 const menu = [];
 const kitchen = [];
 const cafeCustomers = [];
 let cafeSeating = [];
 let customerLog = [];
+let cafeOrders = [];
+let placemats = [];
+let placematLog = [];
+let newRound;
 let currentRound;
 let currentRoundTimer;
+let roundsToPlay;
+let customersAll = 0;
+let gameAlreadyOver = false;
 
 const App = {
-  gameOver: false,
-
   generateRandomNumber: (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
   },
@@ -356,34 +355,35 @@ const App = {
       console.log('cafe chozen is open for business!');
       currentRound = App.round.create();
 
-      let roundsToPlay = Math.ceil(currentRound.settings.total_customers / 3);
+      roundsToPlay = Math.ceil(currentRound.settings.total_customers / 3);
       let roundDelay = 2;
       //console.log('round', currentRound);
 
+      // CUSTOMERS
       App.customer.createCustomers();
 
       for (let i = 1; i <= roundsToPlay; i++) {
         // play rounds
         App.delayFunction(roundDelay, App.round.start);
-
-        // add order function here
-
         roundDelay += 40;
+        currentRound.customers_served = 0;
+        customersAll = 0;
+        gameAlreadyOver = false;
+        UI.round.resetProgressBar();
+        newRound.initializeTimer();
       }
-
-      // ROUND ONE
-      //App.delayFunction(60, App.round.two);
-
-      // ORDER
 
       // KITCHEN (FOOD / POTS)
       App.kitchen.setup();
+
+      // ORDERS
+      App.order.createOrders();
     },
   },
 
   round: {
     create: () => {
-      let newRound = new Round();
+      newRound = new Round();
       let settingsOne = new Settings();
       // let progressBarOne = new ProgressBar(settingsOne.total_customers);
       //let timerOne = new Timer(settingsOne.total_time_minutes);
@@ -391,32 +391,46 @@ const App = {
       // update round with settings, assign it a progress bar and a timer
       newRound.settings = settingsOne;
       // roundOne.progress_bar = progressBarOne;
-      newRound.initializeTimer();
+      // newRound.initializeTimer();
 
-      currentRoundTimer = setInterval(UI.round.updateTimer, 1000);
+      // currentRoundTimer = setInterval(UI.round.updateTimer, 1000);
 
       // open modal with round info
       return newRound;
     },
-    //   one: () => {
-    //       // CUSTOMER
-    // App.customer.createCustomers();
-    //     App.customer.seatCustomers();
-    //     UI.customer.seatCustomers();
-    //     App.delayFunction(20, App.customer.leave);
-    //   },
 
     start: () => {
+      // update interface with round information
+      UI.round.updateInterface(currentRound.number++);
+      newRound.initializeTimer();
+
+      currentRoundTimer = setInterval(UI.round.updateTimer, 1000);
+
+      // seat customers
       App.customer.seatCustomers();
       UI.customer.seatCustomers();
+
+      // place orders
+      App.order.placeOrders();
+      UI.order.placeOrders();
+
+      // customers leave
       App.delayFunction(20, App.customer.leave);
 
-      // cafeSeating = [];
+      if (
+        gameAlreadyOver === true &&
+        currentRound.customers_served !==
+          currentRound.settings.total_customers / roundsToPlay
+      ) {
+        alert('you lost!!!');
+        $('#round').html('<a href="game.html" class="game-over">GAME OVER</a>');
+      }
     },
 
     customerServed: () => {
       // update the round object to show we have served a customer
       currentRound.customerServed();
+      // if (currentRound.number < roundsToPlay) {
       //console.log('customers served', currentRound.customers_served);
 
       if (currentRound.progress_bar === 0) {
@@ -424,21 +438,34 @@ const App = {
       }
 
       // update the round object with the progress
+      let currentProgress =
+        (currentRound.customers_served /
+          (currentRound.settings.total_customers / roundsToPlay)) *
+        100;
       currentRound.progressMade(
-        Math.round(
-          (currentRound.customers_served /
-            currentRound.settings.total_customers) *
-            100
-        ) + '%'
+        Math.round(currentProgress > 100 ? 100 : currentProgress) + '%'
       );
       // update the UI with the progress
       UI.round.updateProgressBar();
+
+      // check if won game
+      App.delayFunction(2, () => {
+        if (App.round.won()) {
+          clearTimeout(currentRoundTimer);
+          alert('You won that one!!');
+          gameAlreadyOver = true;
+        }
+      });
+      //}
     },
 
     won: () => {
       if (
-        currentRound.customers_served === currentRound.settings.total_customers
+        currentRound.customers_served ===
+        currentRound.settings.total_customers / roundsToPlay
       ) {
+        // console.log('curr sust serv', currentRound.customers_served);
+        // console.log('sett tot cust', currentRound.settings.total_customers);
         currentRound.won = true;
         return true;
       } else {
@@ -473,13 +500,10 @@ const App = {
         cafeCustomers.push(cafeCustomer);
         id++;
       }
-
-      // customerLog = cafeCustomers.slice(0);
-
       // console.log('customer line up created', customerLog);
     },
     seatEmpty: () => {
-      console.log('cafe seating', cafeSeating.length);
+      // console.log('cafe seating', cafeSeating.length);
       return cafeSeating.length < 3 ? true : false;
     },
     seatCustomers: () => {
@@ -492,11 +516,10 @@ const App = {
 
         // if a seat is empty, add customer to cafe seating
         if (App.customer.seatEmpty()) {
-          console.log(`seating customer #${customer.id}`);
+          // console.log(`seating customer #${customer.id}`);
           cafeSeating.push(customer);
           cafeCustomers.splice(0, 1);
-          console.log('cafe seating', cafeSeating);
-          console.log('cafe customers', cafeCustomers);
+          customersAll++;
         }
       }
     },
@@ -512,6 +535,56 @@ const App = {
 
   order: {
     // order logic
+    createOrders: () => {
+      let id = 1;
+
+      // create FoodItem objects and append them to the menu array
+      for (let c = 0; c < currentRound.settings.total_customers; c++) {
+        // pick random food item from the menu
+        let order = menu[App.generateRandomNumber(0, menu.length - 1)];
+        let item = new Order(id, order);
+
+        cafeOrders.push(item);
+
+        // use as log for comparison purposes
+        placematLog.push(item);
+        id++;
+      }
+
+      console.log('order queue created', cafeOrders);
+    },
+
+    placematEmpty: () => {
+      console.log('placemats', placemats.length);
+      return placemats.length < 3 ? true : false;
+    },
+    placeOrders: () => {
+      let orderCount = cafeOrders.length;
+      // const
+
+      for (let c = 0; c < orderCount; c++) {
+        // get current order
+        let currentOrder = cafeOrders[0];
+
+        // if a placemat is empty, add order to cafe seating
+        if (App.order.placematEmpty()) {
+          console.log(`Placing order for order #${currentOrder.id}.`);
+          placemats.push(currentOrder);
+          cafeOrders.splice(0, 1);
+          console.log('place mats', placemats);
+          console.log('cafe orders', cafeOrders);
+        }
+      }
+    },
+
+    clearPlacemats: () => {
+      // let id = 1;
+      placemats.forEach((order) => {
+        // customer leaves cafe
+        //App.delayFunction(2 * order.seat, UI.order.clear, order.seat);
+        UI.order.clear(order);
+      });
+    },
   },
 
   kitchen: {
@@ -553,16 +626,18 @@ const App = {
     },
 
     cookFoodItem: (foodItem, currentPot) => {
-      // cook food item
       UI.pot.toggleLabelVisibility(currentPot); // hidden
+
+      // cook food item
       UI.food.cook(foodItem);
+
+      // food is ready
       App.delayFunction(8, UI.food.ready, foodItem);
 
-      // UI.food.ready(foodItem);
+      // pot is ready
       App.delayFunction(7, UI.pot.ready, currentPot);
-      // UI.pot.ready(currentPot);
+
       App.delayFunction(8, UI.pot.toggleLabelVisibility, currentPot);
-      // UI.pot.toggleLabelVisibility(currentPot); // visible
     },
 
     startExpiration: (foodItem, currentPot) => {
@@ -588,28 +663,4 @@ const App = {
 $(() => {
   // TODO: ADD GAME LOGIC
   App.game.start();
-
-  // console.log('cafe chozen is open for business!');
-  // currentRound = App.round.create();
-
-  // let roundsToPlay = Math.ceil(currentRound.settings.total_customers / 3);
-  // console.log('round', currentRound);
-
-  // App.customer.createCustomers();
-
-  // for (let i = 1; i <= roundsToPlay; i++) {
-  //   // play two rounds
-  //   App.delayFunction(i === 1 ? 2 : 40, App.round.start);
-  //   // add order function here
-  // }
-
-  // // ROUND ONE
-  // //App.delayFunction(60, App.round.two);
-
-  // // ORDER
-
-  // // KITCHEN (FOOD / POTS)
-  // App.kitchen.setup();
-
-  //App.secondsTimer(5);
 });
